@@ -1,26 +1,34 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-val-pink: #ffafd6;
+  --color-val-peach: #ffcba4;
+  --color-val-lavender: #e6e6fa;
+  --color-val-mint: #98fb98;
+  --color-val-sky: #87ceeb;
+  --color-val-yellow: #fffacd;
+  --color-val-rose: #ff4d94; /* Button / Strong accent */
+  --color-val-bg: #fff0f5; /* Light fallback */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Gradient background: pink -> peach -> lavender */
+  background: linear-gradient(135deg, #ffafd6 0%, #ffcba4 50%, #e6e6fa 100%);
+  min-height: 100vh;
+  color: #4a4a4a; /* Soft text color */
+  font-family: var(--font-outfit), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Ensure mobile wrapper is centered if on desktop */
+.app-wrapper {
+  /* Previously max-width: 480px; - Removed for full desktop experience */
+  width: 100%; 
+  min-height: 100vh;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
 }
