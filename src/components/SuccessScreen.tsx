@@ -3,23 +3,24 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
-import { ArrowRight, RotateCcw } from "lucide-react";
+import { ArrowRight, RotateCcw, Heart as HeartIcon, Cat } from "lucide-react";
 
 interface SuccessScreenProps {
     onReplay: () => void;
 }
 
-interface Heart {
+interface FloatingElement {
     id: number;
     x: number;
     y: number;
     scale: number;
     color: string;
+    type: 'heart' | 'cat';
 }
 
 export function SuccessScreen({ onReplay }: SuccessScreenProps) {
     const [showOptions, setShowOptions] = useState(false);
-    const [hearts, setHearts] = useState<Heart[]>([]);
+    const [elements, setElements] = useState<FloatingElement[]>([]);
     const [poppedCount, setPoppedCount] = useState(0);
 
     useEffect(() => {
@@ -51,20 +52,21 @@ export function SuccessScreen({ onReplay }: SuccessScreenProps) {
 
         setTimeout(() => setShowOptions(true), 2000);
 
-        // Generate initial floating hearts
-        const initialHearts = Array.from({ length: 30 }).map((_, i) => ({
+        // Generate initial floating elements (hearts + cats)
+        const initialElements = Array.from({ length: 30 }).map((_, i) => ({
             id: i,
             x: Math.random() * 90 + 5, // 5-95%
             y: Math.random() * 80 + 10, // 10-90%
             scale: Math.random() * 0.5 + 0.8,
-            color: ['#ffafd6', '#fb7185', '#db2777'][Math.floor(Math.random() * 3)]
+            color: ['#ffafd6', '#fb7185', '#db2777'][Math.floor(Math.random() * 3)],
+            type: Math.random() > 0.6 ? 'cat' : 'heart' as 'heart' | 'cat' // 40% cats
         }));
-        setHearts(initialHearts);
+        setElements(initialElements);
 
     }, []);
 
-    const popHeart = (id: number) => {
-        setHearts(prev => prev.filter(h => h.id !== id));
+    const popElement = (id: number) => {
+        setElements(prev => prev.filter(el => el.id !== id));
         setPoppedCount(prev => prev + 1);
 
         // Trigger small confetti burst at cursor/touch location? 
@@ -81,15 +83,15 @@ export function SuccessScreen({ onReplay }: SuccessScreenProps) {
                 Popped: {poppedCount} 💖
             </div>
 
-            {/* Floating Hearts Layer - z-50 to be on top of everything for popping */}
+            {/* Floating Elements Layer - z-50 to be on top of everything for popping */}
             <div className="absolute inset-0 z-50 overflow-hidden pointer-events-none">
                 <AnimatePresence>
-                    {hearts.map((heart) => (
+                    {elements.map((el) => (
                         <motion.div
-                            key={heart.id}
+                            key={el.id}
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{
-                                scale: heart.scale,
+                                scale: el.scale,
                                 opacity: 1,
                                 y: [0, -20, 0],
                                 x: [0, 10, -10, 0]
@@ -100,15 +102,19 @@ export function SuccessScreen({ onReplay }: SuccessScreenProps) {
                                 x: { duration: 3, repeat: Infinity, ease: "easeInOut" }
                             }}
                             style={{
-                                left: `${heart.x}%`,
-                                top: `${heart.y}%`,
-                                color: heart.color
+                                left: `${el.x}%`,
+                                top: `${el.y}%`,
+                                color: el.color
                             }}
-                            className="absolute cursor-pointer pointer-events-auto text-4xl drop-shadow-md hover:scale-125 transition-transform"
-                            onClick={() => popHeart(heart.id)}
+                            className="absolute cursor-pointer pointer-events-auto filter drop-shadow-md hover:scale-125 transition-transform p-2"
+                            onClick={() => popElement(el.id)}
                             whileTap={{ scale: 1.5, opacity: 0 }} // Pop effect
                         >
-                            ❤️
+                            {el.type === 'cat' ? (
+                                <Cat size={40} fill="currentColor" strokeWidth={1.5} />
+                            ) : (
+                                <HeartIcon size={40} fill="currentColor" strokeWidth={0} />
+                            )}
                         </motion.div>
                     ))}
                 </AnimatePresence>

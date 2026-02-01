@@ -67,7 +67,7 @@ export function WelcomeScreen({ onStart, name = "Dian Firstiana", photoUrl }: We
                         transition={{ delay: 0.2 }}
                         className="text-lg font-medium text-val-rose/80"
                     >
-                        Hi, {name} 👋
+                        Hello {name} 👋
                     </motion.div>
 
                     <motion.h1
